@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@RestController
+
 public class MainController {
 
     private final UserService userService;
     private final RoleService roleService;
 
-    @Autowired
+
     public MainController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
