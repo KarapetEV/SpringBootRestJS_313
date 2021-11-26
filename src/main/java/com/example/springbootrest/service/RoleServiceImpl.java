@@ -1,7 +1,10 @@
 package com.example.springbootrest.service;
 
-import com.example.springbootrest.dao.RoleDAO;
+import com.example.springbootrest.dao.RoleRepository;
 import com.example.springbootrest.model.Role;
+import com.example.springbootrest.model.UserDTO;
+import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,49 +16,48 @@ import java.util.Set;
 @Transactional
 public class RoleServiceImpl implements RoleService {
 
-    private final RoleDAO roleDAO;
+    private final RoleRepository roleRepository;
 
-    public RoleServiceImpl(RoleDAO roleDAO) {
-        this.roleDAO = roleDAO;
+    @Autowired
+    public RoleServiceImpl(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
     }
 
     @Override
     public List<Role> getAllRoles() {
-        return roleDAO.getAllRoles();
+        return roleRepository.findAll();
     }
 
     @Override
-    public Role getRoleById(long id) {
-        return roleDAO.getRoleById(id);
-    }
-
-    @Override
-    public Role getRoleByName(String roleName) {
-        return roleDAO.getRoleByName(roleName);
+    public Role getRoleByRole(String roleName) throws NotFoundException {
+        Role role = roleRepository.getRoleByRole(roleName);
+        if (role == null) {
+            throw new NotFoundException("Role '" + roleName + "' not found");
+        }
+        return role;
     }
 
     @Override
     public void saveRole(Role role) {
-        roleDAO.saveRole(role);
+        roleRepository.save(role);
     }
 
     @Override
     public void updateRole(Role role) {
-        roleDAO.updateRole(role);
+        roleRepository.save(role);
     }
 
     @Override
-    public void removeRole(long id) {
-        roleDAO.removeRole(id);
+    public Set<Role> getRoleSet(UserDTO userDTO) {
+        Set<Role> setOfRoles = new HashSet<>();
+        for (String role : userDTO.getRolesNames()) {
+            setOfRoles.add(roleRepository.getRoleByRole(role));
+        }
+        return setOfRoles;
     }
 
-    @Override
-    public HashSet<Role> getSetOfRoles(String[] roleSet) {
-        return roleDAO.getSetOfRoles(roleSet);
-    }
-
-    @Override
-    public Set<Role> setRoleByName(String name, String[] rolesName) {
-        return roleDAO.setRoleByName(name, rolesName);
-    }
+//    @Override
+//    public Set<Role> setRoleByName(String name, String[] rolesName) {
+//        return roleRepository.setRoleByName(name, rolesName);
+//    }
 }

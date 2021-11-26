@@ -1,6 +1,8 @@
 package com.example.springbootrest.service;
 
 import com.example.springbootrest.model.Role;
+import com.example.springbootrest.model.UserDTO;
+import javassist.NotFoundException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -10,17 +12,13 @@ public interface RoleService {
 
     List<Role> getAllRoles();
 
-    Role getRoleById(long id);
-
-    Role getRoleByName(String roleName);
+    Role getRoleByRole(String roleName) throws NotFoundException;
 
     void saveRole(Role role);
 
     void updateRole(Role role);
 
-    void removeRole(long id);
+    Set<Role> getRoleSet(UserDTO userDTO);
 
-    HashSet<Role> getSetOfRoles(String[] roleSet);
-
-    Set<Role> setRoleByName(String name, String[] rolesName);
+    //Set<Role> setRoleByName(String name, String[] rolesName);
 }

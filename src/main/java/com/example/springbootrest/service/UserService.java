@@ -1,6 +1,7 @@
 package com.example.springbootrest.service;
 
 import com.example.springbootrest.model.User;
+import javassist.NotFoundException;
 
 import java.util.List;
 
@@ -8,15 +9,15 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    User getUser(long id);
-
-    public void addUser(User user);
+    User getUserById(long id);
 
     void saveUser(User user);
 
-    void removeUser(long id);
+    void removeUser(User user);
 
-    void updateUser(long id, User updatedUser);
+    void updateUser(User user);
 
-    User getUserByEmail(String email);
+    User getUserByEmail(String email) throws NotFoundException;
+
+    User getUserByName(String name) throws NotFoundException;
 }

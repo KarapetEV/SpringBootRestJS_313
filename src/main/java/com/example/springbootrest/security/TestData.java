@@ -4,6 +4,7 @@ import com.example.springbootrest.model.Role;
 import com.example.springbootrest.model.User;
 import com.example.springbootrest.service.RoleService;
 import com.example.springbootrest.service.UserService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,7 @@ public class TestData {
     }
 
     @PostConstruct
-    public void insertData() {
+    public void insertData() throws NotFoundException {
 
 //        Role roleAdmin = new Role("ROLE_ADMIN");
 //        Role roleUser = new Role("ROLE_USER");
@@ -32,7 +33,7 @@ public class TestData {
         roleService.saveRole(new Role("ROLE_USER"));
 
         Set<Role> roles1 = new HashSet<>();
-        roles1.add(roleService.getRoleByName("ROLE_USER"));
+        roles1.add(roleService.getRoleByRole("ROLE_USER"));
 
         User bob = new User();
         bob.setFirstName("Bob");
@@ -41,11 +42,11 @@ public class TestData {
         bob.setAge(51);
         bob.setEmail("bobby513@test.com");
         bob.setRoles(roles1);
-        userService.addUser(bob);
+        userService.saveUser(bob);
 
         Set<Role> roles2 = new HashSet<>();
-        roles2.add(roleService.getRoleByName("ROLE_USER"));
-        roles2.add(roleService.getRoleByName("ROLE_ADMIN"));
+        roles2.add(roleService.getRoleByRole("ROLE_USER"));
+        roles2.add(roleService.getRoleByRole("ROLE_ADMIN"));
 
         User tom = new User();
         tom.setFirstName("Tom");
@@ -54,6 +55,6 @@ public class TestData {
         tom.setAge(32);
         tom.setEmail("tom32@test.com");
         tom.setRoles(roles2);
-        userService.addUser(tom);
+        userService.saveUser(tom);
     }
 }
