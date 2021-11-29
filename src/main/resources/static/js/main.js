@@ -40,7 +40,7 @@ function openModal(id){
 
             document.getElementById('delId').value = user.id;
             document.getElementById('delFirstName').value = user.firstName;
-            document.getElementById('delLastname').value = user.lastName;
+            document.getElementById('delLastName').value = user.lastName;
             document.getElementById('delAge').value = user.age;
             document.getElementById('delEmail').value = user.email;
         });
@@ -103,7 +103,7 @@ function showUserInfo() {
 }
 showUserInfo();
 //---------------------------Редактирование юзера---------------------------
-async function edituser() {
+async function editUser() {
     let user = {
         id: document.getElementById('id').value,
         firstName: document.getElementById('editFirstName').value,
@@ -122,12 +122,31 @@ async function edituser() {
         },
         body: JSON.stringify(user)
     });
-    $("#modalEdit").modal();
+    $("#modalEdit .close").click();
+    refreshTable();
 }
 
 //---------------------------Удаление юзера---------------------------
 function deleteUser() {
+    fetch("/admin/users/" + document.getElementById("delId").value, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
+    })
 
+    $("#modalDelete .close").click();
+    refreshTable();
+}
+
+//---------------------------Получение ролей---------------------------
+function refreshTable() {
+    let table = document.getElementById('allUsersTable')
+    if (table.rows.length > 1) {
+        table.deleteRow(1)
+    }
+    setTimeout(getAllUsers, 150);
 }
 
 //---------------------------Получение ролей---------------------------
