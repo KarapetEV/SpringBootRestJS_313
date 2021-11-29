@@ -6,6 +6,7 @@ import com.example.springbootrest.model.User;
 import com.example.springbootrest.model.UserDTO;
 import com.example.springbootrest.service.RoleService;
 import com.example.springbootrest.service.UserService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -50,17 +51,16 @@ public class MainRestController {
     }
 
     @PostMapping("/admin/new")
-    public ResponseEntity<User> addUser(@RequestBody UserDTO userDTO) {
-        User user = new User(userDTO);
+    public ResponseEntity<User> addUser(@RequestBody User user) throws NotFoundException {
         HttpHeaders headers = new HttpHeaders();
-        user.setRoles(roleService.getRoleSet(userDTO));
+        setUserRoles(user);
         userService.saveUser(user);
         return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
     }
 
     @PutMapping("/admin/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody UserDTO userDTO) {
-        User user = new User(userDTO);
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        setUserRoles(user);
         userService.saveUser(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -75,13 +75,19 @@ public class MainRestController {
         return new ResponseEntity<>(user, HttpStatus.NO_CONTENT);
     }
 
-//    public void setUserRoles(User user) {
-//        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-//            Set<Role> setOfRoles = new LinkedHashSet<>();
-//            user.getRoles().forEach(role -> setOfRoles.add(roleService.getRoleByName(role.getRole())));
-//            user.setRoles(setOfRoles);
-//        } else {
-//            user.setRoles(userService.getUser(user.getId()).getRoles());
-//        }
-//    }
+    public void setUserRoles(User user) {
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            Set<Role> setOfRoles = new LinkedHashSet<>();
+            user.getRoles().forEach(role -> {
+                try {
+                    setOfRoles.add(roleService.getRoleByRole(role.getRole()));
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
+            user.setRoles(setOfRoles);
+        } else {
+            user.setRoles(userService.getUserById(user.getId()).getRoles());
+        }
+    }
 }

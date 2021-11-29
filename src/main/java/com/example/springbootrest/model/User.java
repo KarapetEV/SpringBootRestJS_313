@@ -35,22 +35,31 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
+    public User(String password, String firstName, String lastName, int age, String email) {
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+    }
+
+    public User(String password, String firstName, String lastName, int age, String email, Set<Role> roles) {
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.roles = roles;
+    }
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles = new HashSet<>();
 
-    public User(UserDTO userDTO) {
-        this.id = userDTO.getId();
-        this.password = userDTO.getPassword();
-        this.firstName = userDTO.getFirstName();
-        this.lastName = userDTO.getLastName();
-        this.age = userDTO.getAge();
-        this.email = userDTO.getEmail();
-    }
+    private Set<Role> roles = new HashSet<>();
 
     @Override
     public String getPassword() {

@@ -18,7 +18,7 @@ public interface RoleService {
 
     void updateRole(Role role);
 
-    Set<Role> getRoleSet(UserDTO userDTO);
+    Set<Role> getRoleSet(String[] roleSet) throws NotFoundException;
 
     //Set<Role> setRoleByName(String name, String[] rolesName);
 }

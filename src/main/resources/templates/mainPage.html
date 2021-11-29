@@ -29,10 +29,10 @@
                  style="padding-top: 20px; padding-left: 0px; padding-right: 0px; height: 100vh">
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#AllUsersTable">Admin</a>
+                        <a class="nav-link active" data-toggle="tab" href="#AdminTab">Admin</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#AutorizeTable">User</a>
+                        <a class="nav-link" data-toggle="tab" href="#AuthorizeTable">User</a>
                     </li>
                 </ul>
             </div>
@@ -40,7 +40,7 @@
             <div class="col-md-10 bg-light" style="padding-top: 20px;  height: 100vh">
                 <div class="tab-content">
                     <!--Admin tab (Admin Panel)-->
-                    <div class="tab-pane fade show active" id="AllUsersTable">
+                    <div class="tab-pane fade show active" id="AdminTab">
                         <h2 class="h2">Admin panel</h2>
                         <!--Вкладки админа (начало)-->
                         <ul class="nav nav-tabs">
@@ -71,7 +71,8 @@
                                                 <th>Delete</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="allUsersTable">
+
                                             <tr th:each="user : ${users}">
                                                 <td th:text="${user.getId}"></td>
                                                 <td th:text="${user.getFirstName()}"></td>
@@ -329,7 +330,7 @@
                         </div>
                     </div>
                     <!--User tab (Admin Panel)-->
-                    <div class="tab-pane fade" id="AutorizeTable">
+                    <div class="tab-pane fade" id="AuthorizeTable">
                         <h2 class="h2">User information-page</h2>
                         <div class="card">
                             <h5 class="card-header">About user</h5>

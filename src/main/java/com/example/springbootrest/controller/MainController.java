@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-
+@Controller
 public class MainController {
 
     private final UserService userService;
@@ -26,7 +26,7 @@ public class MainController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/admin/users")
+    @GetMapping("/admin")
     public String mainPage(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -34,7 +34,7 @@ public class MainController {
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("roles", roleService.getAllRoles());
         model.addAttribute("newUser", new User());
-        return "mainPage";
+        return "main";
     }
 
 //    @PostMapping("/admin/new")
@@ -54,13 +54,13 @@ public class MainController {
 //        return "redirect:/admin/users";
 //    }
 
-    @DeleteMapping("/admin/{id}")
+//    @DeleteMapping("/admin/{id}")
 //    public String removeUser(@PathVariable("id") long id) {
 //        userService.removeUser(id);
 //        return "redirect:/admin/users";
 //    }
 
-    @GetMapping("/user/user")
+    @GetMapping("/user")
     public String getUserById(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
