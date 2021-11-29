@@ -152,8 +152,8 @@
                                           name="roles"
                                           id="editRole"
                                           multiple size="2">
-                                    <option value="ADMIN">ADMIN</option>
-                                    <option value="USER">USER</option>
+                                    <option value="ROLE_ADMIN">ADMIN</option>
+                                    <option value="ROLE_USER">USER</option>
                                   </select>
                                 </div>
                               </div>
@@ -166,7 +166,7 @@
                                   data-dismiss="modal">Close</button>
                           <button type="submit"
                                   class="btn btn-primary"
-                                  onclick="edituser()">Edit</button>
+                                  onclick="editUser()">Edit</button>
                         </div>
                       </form>
                     </div>
@@ -176,7 +176,6 @@
               <!--Окно для редактирования юзера (конец)-->
               <!--Окно для удаления юзера (начало)-->
               <div class="modal fade" id="modalDelete"
-                   th:attrappend="id=${user.id}"
                    tabindex="-1" role="dialog"
                    aria-labelledby="TitleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -238,8 +237,8 @@
                                       multiple required size="2"
                                       name="delRoles"
                                       readonly>
-                                <option value="ADMIN">ADMIN</option>
-                                <option value="USER">USER</option>
+                                <option value="ROLE_ADMIN">ADMIN</option>
+                                <option value="ROLE_USER">USER</option>
                               </select>
                             </div>
                           </div>
@@ -289,13 +288,12 @@
                               <div>
                                 <select id="newRole" class="form-control" name="roles" multiple
                                         required size="2">
-                                  <option value="ADMIN">ADMIN</option>
-                                  <option value="USER">USER</option>
+                                  <option value="ROLE_ADMIN">ADMIN</option>
+                                  <option value="ROLE_USER">USER</option>
                                 </select>
                               </div>
                               <h1></h1>
-                              <button type="submit" class="btn btn-success">Add new user
-                              </button>
+                              <button type="submit" class="btn btn-success" onclick="addNewUser()">Add new user</button>
                             </div>
                           </form>
                         </div>
@@ -323,15 +321,7 @@
                     <th>Role</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <tr>
-                    <td th:text="${user.getId()}"></td>
-                    <td th:text="${user.getFirstName()}"></td>
-                    <td th:text="${user.getLastName()}"></td>
-                    <td th:text="${user.getAge()}"></td>
-                    <td th:text="${user.getEmail()}"></td>
-                    <td th:utext="${user.rolesToString()}"></td>
-                  </tr>
+                  <tbody id="userInfo">
                   </tbody>
                 </table>
               </div>
@@ -342,6 +332,7 @@
     </div>
   </div>
 </main>
+<script type="text/javascript" th:src="@{/js/main.js}" src="../static/js/main.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
@@ -351,6 +342,5 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>
-<script src="../static/js/main.js"></script>
 </body>
 </html>

@@ -2,7 +2,6 @@ package com.example.springbootrest.service;
 
 import com.example.springbootrest.dao.RoleRepository;
 import com.example.springbootrest.model.Role;
-import com.example.springbootrest.model.UserDTO;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

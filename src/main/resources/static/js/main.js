@@ -1,11 +1,10 @@
 //---------------------------Таблица всех юзеров---------------------------
-
 function getAllUsers() {
-    fetch('http://localhost:8080/admin/users')
+    fetch('http://localhost:8080/api/users')
         .then(res => res.json())
         .then(users => {
             let temp = '';
-            users.forEach(user => {
+            users.forEach(function (user) {
                 temp += '<tr>'
                 temp += '<td>' + user.id + '</td>'
                 temp += '<td>' + user.firstName + '</td>'
@@ -17,20 +16,26 @@ function getAllUsers() {
                     '<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modalEdit" ' +
                     'onclick="openModal(${user.id})">Edit</button></td>'
                 temp += '<td>' +
-                    '<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#modalEdit" ' +
+                    '<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#modalDelete" ' +
                     'onclick="openModal(${user.id})">Delete</button></td>'
                 temp += '</tr>'
             });
             document.getElementById("allUsersTable").innerHTML = temp;
         });
 }
-getAllUsers();
+
+getAllUsers()
 
 //---------------------------Модальное окно---------------------------
-function openModal(id){
-    fetch('http://localhost:8080/admin/' + id)
-        .then(res => res.json())
-        .then(user => {
+function openModal(id) {
+    fetch("http://localhost:8080/api/showUser/" + id, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8'
+        }
+    }).then(res => {
+        res.json().then(user => {
+            console.log(user);
             document.getElementById('id').value = user.id;
             document.getElementById('editFirstName').value = user.firstName;
             document.getElementById('editPassword').value = user.password;
@@ -43,14 +48,15 @@ function openModal(id){
             document.getElementById('delLastName').value = user.lastName;
             document.getElementById('delAge').value = user.age;
             document.getElementById('delEmail').value = user.email;
-        });
+        })
+    });
 }
 
 //---------------------------Добавление нового юзера---------------------------
 async function addNewUser() {
     await document.getElementById('NewUser')
         .addEventListener('submit', e => {
-            e.preventDefault()
+            e.preventDefault();
 
             let firstname = document.getElementById('newFirstName').value;
             let lastname = document.getElementById('newLastName').value;
@@ -60,7 +66,7 @@ async function addNewUser() {
             let roles_list = document.getElementById('newRole').value;
             let roles = getRoles(roles_list);
 
-            fetch('/admin/users', {
+            fetch('http://localhost:8080/api/newUser', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -83,11 +89,10 @@ async function addNewUser() {
         })
 }
 
-
 //---------------------------Инфо юзера---------------------------
 function showUserInfo() {
-    fetch('/admin/users')
-        .then((res) => res.join())
+    fetch('http://localhost:8080/api/userInfo')
+        .then((res) => res.json())
         .then((user) => {
             let temp = "";
             temp += `<tr>
@@ -98,10 +103,12 @@ function showUserInfo() {
             <td>${user.email}</td>
             <td>${user.roles.map(r => r.role.replace("ROLE_", "")).join(", ")}</td>
             </tr>`;
-            document.getElementById("allUsersTable").innerHTML = temp;
+            document.getElementById("userInfo").innerHTML = temp;
         });
 }
+
 showUserInfo();
+
 //---------------------------Редактирование юзера---------------------------
 async function editUser() {
     let user = {
@@ -112,9 +119,8 @@ async function editUser() {
         email: document.getElementById('editEmail').value,
         password: document.getElementById('editPassword').value,
         roles: getRoles(document.getElementById('editRole').value)
-
     }
-    let response = await fetch('/admin/users', {
+    await fetch('http://localhost:8080/api/update', {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
@@ -128,7 +134,7 @@ async function editUser() {
 
 //---------------------------Удаление юзера---------------------------
 function deleteUser() {
-    fetch("/admin/users/" + document.getElementById("delId").value, {
+    fetch("http://localhost:8080/api/delete/" + document.getElementById("delId").value, {
         method: 'DELETE',
         headers: {
             'Accept': 'application/json',
@@ -140,7 +146,7 @@ function deleteUser() {
     refreshTable();
 }
 
-//---------------------------Получение ролей---------------------------
+//---------------------------Обновление таблицы юзеров---------------------------
 function refreshTable() {
     let table = document.getElementById('allUsersTable')
     if (table.rows.length > 1) {

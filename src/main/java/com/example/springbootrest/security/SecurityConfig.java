@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                     .loginPage("/login")
                     .successHandler(loginSuccessHandler)
-                    //.loginProcessingUrl("/login")
+                    .loginProcessingUrl("/login")
                     .usernameParameter("j_email")
                     .passwordParameter("j_password")
                     .permitAll();
@@ -60,12 +60,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-//                .anyRequest()
-//                .permitAll();
                     .antMatchers("/login").anonymous()
                     .antMatchers("/user/**").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-                    .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                    //.antMatchers("/").permitAll()
+                    .antMatchers("/**").access("hasRole('ROLE_ADMIN')")
                     .anyRequest().authenticated();
     }
 

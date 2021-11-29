@@ -3,7 +3,6 @@ package com.example.springbootrest.controller;
 import com.example.springbootrest.exception.UserNotFoundException;
 import com.example.springbootrest.model.Role;
 import com.example.springbootrest.model.User;
-import com.example.springbootrest.model.UserDTO;
 import com.example.springbootrest.service.RoleService;
 import com.example.springbootrest.service.UserService;
 import javassist.NotFoundException;
@@ -11,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashSet;
@@ -21,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@RequestMapping("/api")
 public class MainRestController {
 
     private final UserService userService;
@@ -32,25 +30,31 @@ public class MainRestController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/admin/users")
+    @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> userList = userService.getAllUsers();
-        if (userList == null || userList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (userList != null && !userList.isEmpty()) {
+            return new ResponseEntity<>(userList, HttpStatus.OK);
         }
-        return new ResponseEntity<>(userList, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/admin/{id}")
+    @GetMapping("/showUser/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) throws UserNotFoundException {
         User user = userService.getUserById(id);
         if (user == null) {
             throw new UserNotFoundException("User with ID = " + id + " not found!");
         }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/admin/new")
+    @GetMapping("/userInfo")
+    public ResponseEntity<User> showUserInfo(@AuthenticationPrincipal User user) throws NotFoundException {
+        User userById = userService.getUserByEmail(user.getEmail());
+        return ResponseEntity.ok(userById);
+    }
+
+    @PostMapping("/newUser")
     public ResponseEntity<User> addUser(@RequestBody User user) throws NotFoundException {
         HttpHeaders headers = new HttpHeaders();
         setUserRoles(user);
@@ -58,14 +62,14 @@ public class MainRestController {
         return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
     }
 
-    @PutMapping("/admin/{id}")
+    @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         setUserRoles(user);
         userService.saveUser(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @DeleteMapping("/admin/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<User> removeUser(@PathVariable("id") long id) throws UserNotFoundException {
         User user = userService.getUserById(id);
         if (user == null) {
