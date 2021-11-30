@@ -57,16 +57,18 @@ public class MainRestController {
     @PostMapping("/newUser")
     public ResponseEntity<User> addUser(@RequestBody User user) throws NotFoundException {
         HttpHeaders headers = new HttpHeaders();
-        setUserRoles(user);
+//        setUserRoles(user);
         userService.saveUser(user);
-        return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
+//        return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
+        System.out.println(userService.getUserByName(user.getFirstName()));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
-        setUserRoles(user);
+//        setUserRoles(user);
         userService.saveUser(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

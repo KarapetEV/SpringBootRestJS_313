@@ -73,12 +73,12 @@ async function addNewUser() {
                     'Content-Type': 'application/json;charset=UTF-8'
                 },
                 body: JSON.stringify({
-                    firstname,
-                    lastname,
-                    age,
-                    email,
-                    password,
-                    'roles': roles
+                    firstName: firstname,
+                    lastName: lastname,
+                    age: age,
+                    email: email,
+                    password: password,
+                    roles: roles
                 })
             })
                 .then(() => {
@@ -119,6 +119,7 @@ async function editUser() {
         email: document.getElementById('editEmail').value,
         password: document.getElementById('editPassword').value,
         roles: getRoles(document.getElementById('editRole').value)
+        // roles: getRoles(Array.from(document.getElementById('editRole').selectedOptions).map(role => role.value))
     }
     await fetch('http://localhost:8080/api/update', {
         method: 'PUT',
@@ -158,19 +159,12 @@ function refreshTable() {
 //---------------------------Получение ролей---------------------------
 function getRoles(list) {
     let roles = [];
-    if (list === "ADMIN") {
-        let role = {
-            'id': 1,
-            'name': 'ADMIN'
-        }
-        roles.push(role)
+
+    if (list.indexOf("USER") >= 0) {
+        roles.push({"id": 2});
     }
-    if (list === "USER") {
-        let role = {
-            'id': 2,
-            'name': 'USER'
-        }
-        roles.push(role)
+    if (list.indexOf("ADMIN") >= 0) {
+        roles.push({"id": 1});
     }
     return roles;
 }

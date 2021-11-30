@@ -36,13 +36,6 @@ public class PageController {
         return "main";
     }
 
-//    @GetMapping("user")
-//    public String userPage(Model model, Principal principal) {
-//        User user = userRepository.getUserByFirstName(principal.getName());
-//        model.addAttribute("user", user);
-//        return "userInfo";
-//    }
-
     @GetMapping("/user")
     public String showUser(@AuthenticationPrincipal User userModel, Model model) {
         User user = userRepository.getUserByFirstName(userModel.getFirstName());
