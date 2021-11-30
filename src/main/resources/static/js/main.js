@@ -1,6 +1,6 @@
 //---------------------------Таблица всех юзеров---------------------------
 function getAllUsers() {
-    fetch('http://localhost:8080/api/users')
+    fetch("http://localhost:8080/api/users")
         .then(res => res.json())
         .then(users => {
             let temp = '';
@@ -54,7 +54,7 @@ function openModal(id) {
 
 //---------------------------Добавление нового юзера---------------------------
 async function addNewUser() {
-    await document.getElementById('NewUser')
+    await document.getElementById('NewUserForm')
         .addEventListener('submit', e => {
             e.preventDefault();
 
@@ -66,8 +66,8 @@ async function addNewUser() {
             let roles_list = document.getElementById('newRole').value;
             let roles = getRoles(roles_list);
 
-            fetch('http://localhost:8080/api/newUser', {
-                method: 'POST',
+            fetch("http://localhost:8080/api/newUser", {
+                method: "POST",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json;charset=UTF-8'
@@ -84,7 +84,7 @@ async function addNewUser() {
                 .then(() => {
                     document.getElementById("usersTabLink").click();
                     getAllUsers();
-                    document.getElementById("newUser").reset();
+                    document.getElementById("NewUserForm").reset();
                 })
         })
 }
