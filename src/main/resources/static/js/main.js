@@ -5,20 +5,23 @@ function getAllUsers() {
         .then(users => {
             let temp = '';
             users.forEach(function (user) {
-                temp += '<tr>'
-                temp += '<td>' + user.id + '</td>'
-                temp += '<td>' + user.firstName + '</td>'
-                temp += '<td>' + user.lastName + '</td>'
-                temp += '<td>' + user.age + '</td>'
-                temp += '<td>' + user.email + '</td>'
-                temp += '<td>' + user.roles.map(r => r.role.replace("ROLE_", "")).join(", ") + '</td>'
-                temp += '<td>' +
-                    '<button class="btn btn-info" type="button" data-toggle="modal" data-target="#modalEdit" ' +
-                    'onclick="openModal(${user.id})">Edit</button></td>'
-                temp += '<td>' +
-                    '<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#modalDelete" ' +
-                    'onclick="openModal(${user.id})">Delete</button></td>'
-                temp += '</tr>'
+                temp += `
+                <tr>
+                <td id="id${user.id}">${user.id}</td>
+                <td id="firstName${user.id}">${user.firstName}</td> 
+                <td id="lastName${user.id}">${user.lastName}</td> 
+                <td id="age${user.id}">${user.age}</td>
+                <td id="email${user.id}">${user.email}</td>
+                <td id="roles${user.id}">${user.roles.map(r => r.role.replace('ROLE_','')).join(', ')}</td>
+                <td>
+                <button class="btn btn-info btn-md" type="button"
+                data-toggle="modal" data-target="#modalEdit" 
+                onclick="openModal(${user.id})">Edit</button></td>
+                <td>
+                <button class="btn btn-danger btn-md" type="button"
+                data-toggle="modal" data-target="#modalDelete" 
+                onclick="openModal(${user.id})">Delete</button></td>
+              </tr>`;
             });
             document.getElementById("allUsersTable").innerHTML = temp;
         });
@@ -53,26 +56,26 @@ function openModal(id) {
 }
 
 //---------------------------Добавление нового юзера---------------------------
-async function addNewUser() {
-    await document.getElementById('NewUserForm')
-        .addEventListener('submit', e => {
-            e.preventDefault();
+document.getElementById("NewUserForm")
+    .addEventListener("submit", addNewUser);
 
-            let firstname = document.getElementById('newFirstName').value;
-            let lastname = document.getElementById('newLastName').value;
-            let age = document.getElementById('newAge').value;
-            let email = document.getElementById('newEmail').value;
-            let password = document.getElementById('newPassword').value;
-            let roles_list = document.getElementById('newRole').value;
-            let roles = getRoles(roles_list);
+function addNewUser(e) {
+    e.preventDefault();
 
-            fetch("http://localhost:8080/api/newUser", {
-                method: "POST",
-                headers: {
+    let firstname = document.getElementById('newFirstName').value;
+    let lastname = document.getElementById('newLastName').value;
+    let age = document.getElementById('newAge').value;
+    let email = document.getElementById('newEmail').value;
+    let password = document.getElementById('newPassword').value;
+    let roles = getRoles(Array.from(document.getElementById('newRole').selectedOptions)
+        .map(role => role.value));
+    fetch("http://localhost:8080/api/newUser", {
+        method: "POST",
+        headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json;charset=UTF-8'
                 },
-                body: JSON.stringify({
+        body: JSON.stringify({
                     firstName: firstname,
                     lastName: lastname,
                     age: age,
@@ -80,13 +83,12 @@ async function addNewUser() {
                     password: password,
                     roles: roles
                 })
-            })
-                .then(() => {
+    })
+        .then(() => {
                     document.getElementById("usersTabLink").click();
                     getAllUsers();
                     document.getElementById("NewUserForm").reset();
                 })
-        })
 }
 
 //---------------------------Инфо юзера---------------------------
@@ -118,19 +120,21 @@ async function editUser() {
         age: document.getElementById('editAge').value,
         email: document.getElementById('editEmail').value,
         password: document.getElementById('editPassword').value,
-        roles: getRoles(document.getElementById('editRole').value)
-        // roles: getRoles(Array.from(document.getElementById('editRole').selectedOptions).map(role => role.value))
+        roles: getRoles(Array.from(document.getElementById('editRole').selectedOptions)
+            .map(role => role.value))
     }
-    await fetch('http://localhost:8080/api/update', {
-        method: 'PUT',
+    let response = await fetch('http://localhost:8080/api/update', {
+        method: "PATCH",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json;charset=UTF-8'
         },
         body: JSON.stringify(user)
     });
-    $("#modalEdit .close").click();
-    refreshTable();
+    if (response.ok) {
+        $("#modalEdit .close").click();
+        refreshTable();
+    }
 }
 
 //---------------------------Удаление юзера---------------------------

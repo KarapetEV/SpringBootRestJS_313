@@ -60,25 +60,21 @@ public class MainRestController {
 //        setUserRoles(user);
         userService.saveUser(user);
 //        return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
-        System.out.println(userService.getUserByName(user.getFirstName()));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
 //        setUserRoles(user);
-        userService.saveUser(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        userService.updateUser(user);
+        System.out.println(user);
+        return ResponseEntity.ok().body(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<User> removeUser(@PathVariable("id") long id) throws UserNotFoundException {
-        User user = userService.getUserById(id);
-        if (user == null) {
-            throw new UserNotFoundException("User with ID = " + id + " not found!");
-        }
-        userService.removeUser(user);
-        return new ResponseEntity<>(user, HttpStatus.NO_CONTENT);
+        userService.removeUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     public void setUserRoles(User user) {
