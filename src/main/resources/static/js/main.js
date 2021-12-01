@@ -12,7 +12,7 @@ function getAllUsers() {
                 <td id="lastName${user.id}">${user.lastName}</td> 
                 <td id="age${user.id}">${user.age}</td>
                 <td id="email${user.id}">${user.email}</td>
-                <td id="roles${user.id}">${user.roles.map(r => r.role.replace('ROLE_','')).join(', ')}</td>
+                <td id="roles${user.id}">${user.roles.map(r => r.role.replace('ROLE_', '')).join(', ')}</td>
                 <td>
                 <button class="btn btn-info btn-md" type="button"
                 data-toggle="modal" data-target="#modalEdit" 
@@ -72,23 +72,23 @@ function addNewUser(e) {
     fetch("http://localhost:8080/api/newUser", {
         method: "POST",
         headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json;charset=UTF-8'
-                },
+            'Accept': 'application/json',
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
         body: JSON.stringify({
-                    firstName: firstname,
-                    lastName: lastname,
-                    age: age,
-                    email: email,
-                    password: password,
-                    roles: roles
-                })
+            firstName: firstname,
+            lastName: lastname,
+            age: age,
+            email: email,
+            password: password,
+            roles: roles
+        })
     })
         .then(() => {
-                    document.getElementById("usersTabLink").click();
-                    getAllUsers();
-                    document.getElementById("NewUserForm").reset();
-                })
+            document.getElementById("usersTabLink").click();
+            getAllUsers();
+            document.getElementById("NewUserForm").reset();
+        })
 }
 
 //---------------------------Инфо юзера---------------------------
@@ -112,6 +112,9 @@ function showUserInfo() {
 showUserInfo();
 
 //---------------------------Редактирование юзера---------------------------
+document.getElementById("editForm")
+    .addEventListener("submit", editUser);
+
 async function editUser() {
     let user = {
         id: document.getElementById('id').value,
@@ -122,17 +125,21 @@ async function editUser() {
         password: document.getElementById('editPassword').value,
         roles: $('#editRole').val()
     }
-    console.log(user.roles);
-    await fetch('http://localhost:8080/api/update', {
+    const updated = await fetch('http://localhost:8080/api/update', {
         method: "PUT",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json;charset=UTF-8'
         },
         body: JSON.stringify(user)
-    });
-    $("#modalEdit .close").click();
-    refreshTable();
+    }).then(response => console.log(response));
+
+    if (updated) {
+        $("#modalEdit .close").click();
+        await this.refreshTable();
+    }
+    // $("#modalEdit .close").click();
+    // refreshTable();
 }
 
 //---------------------------Удаление юзера---------------------------
