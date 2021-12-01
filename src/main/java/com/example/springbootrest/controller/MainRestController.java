@@ -56,19 +56,14 @@ public class MainRestController {
 
     @PostMapping("/newUser")
     public ResponseEntity<User> addUser(@RequestBody User user) throws NotFoundException {
-        HttpHeaders headers = new HttpHeaders();
-//        setUserRoles(user);
         userService.saveUser(user);
-//        return new ResponseEntity<>(user, headers, HttpStatus.CREATED);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody User user) {
-//        setUserRoles(user);
         userService.updateUser(user);
-        System.out.println(user);
-        return ResponseEntity.ok().body(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -77,19 +72,19 @@ public class MainRestController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    public void setUserRoles(User user) {
-        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-            Set<Role> setOfRoles = new LinkedHashSet<>();
-            user.getRoles().forEach(role -> {
-                try {
-                    setOfRoles.add(roleService.getRoleByRole(role.getRole()));
-                } catch (NotFoundException e) {
-                    e.printStackTrace();
-                }
-            });
-            user.setRoles(setOfRoles);
-        } else {
-            user.setRoles(userService.getUserById(user.getId()).getRoles());
-        }
-    }
+//    public void setUserRoles(User user) {
+//        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+//            Set<Role> setOfRoles = new LinkedHashSet<>();
+//            user.getRoles().forEach(role -> {
+//                try {
+//                    setOfRoles.add(roleService.getRoleByRole(role.getRole()));
+//                } catch (NotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//            user.setRoles(setOfRoles);
+//        } else {
+//            user.setRoles(userService.getUserById(user.getId()).getRoles());
+//        }
+//    }
 }

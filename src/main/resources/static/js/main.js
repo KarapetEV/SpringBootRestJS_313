@@ -120,26 +120,24 @@ async function editUser() {
         age: document.getElementById('editAge').value,
         email: document.getElementById('editEmail').value,
         password: document.getElementById('editPassword').value,
-        roles: getRoles(Array.from(document.getElementById('editRole').selectedOptions)
-            .map(role => role.value))
+        roles: $('#editRole').val()
     }
-    let response = await fetch('http://localhost:8080/api/update', {
-        method: "PATCH",
+    console.log(user.roles);
+    await fetch('http://localhost:8080/api/update', {
+        method: "PUT",
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json;charset=UTF-8'
         },
         body: JSON.stringify(user)
     });
-    if (response.ok) {
-        $("#modalEdit .close").click();
-        refreshTable();
-    }
+    $("#modalEdit .close").click();
+    refreshTable();
 }
 
 //---------------------------Удаление юзера---------------------------
-function deleteUser() {
-    fetch("http://localhost:8080/api/delete/" + document.getElementById("delId").value, {
+async function deleteUser() {
+    await fetch("http://localhost:8080/api/delete/" + document.getElementById("delId").value, {
         method: 'DELETE',
         headers: {
             'Accept': 'application/json',
@@ -154,10 +152,10 @@ function deleteUser() {
 //---------------------------Обновление таблицы юзеров---------------------------
 function refreshTable() {
     let table = document.getElementById('allUsersTable')
-    if (table.rows.length > 1) {
+    while (table.rows.length > 1) {
         table.deleteRow(1)
     }
-    setTimeout(getAllUsers, 150);
+    setTimeout(getAllUsers, 200);
 }
 
 //---------------------------Получение ролей---------------------------
